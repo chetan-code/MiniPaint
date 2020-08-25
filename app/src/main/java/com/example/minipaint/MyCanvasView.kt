@@ -2,6 +2,7 @@ package com.example.minipaint
 
 import android.content.Context
 import android.graphics.*
+import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewAnimationUtils
@@ -12,14 +13,16 @@ import androidx.core.content.res.ResourcesCompat
 
 private const val  STROKE_WIDTH = 12f //has to be float
 
-class MyCanvasView (context : Context) : View(context){
+class MyCanvasView @JvmOverloads constructor(
+    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+) : View(context, attrs, defStyleAttr) {
 
     //caching what has been drawn before
     private lateinit var extraCanvas: Canvas
     private lateinit var extraBitmap: Bitmap
     //class vraiable for background color
     private val backgroundColor = ResourcesCompat.getColor(resources, R.color.colorBackground, null)
-    private val drawColor = ResourcesCompat.getColor(resources,R.color.colorPaint, null)
+    var drawColor = ResourcesCompat.getColor(resources,R.color.colorPaint, null)
 
     //to store the path that has been drawn
     private var path = Path()
@@ -53,6 +56,10 @@ class MyCanvasView (context : Context) : View(context){
 
     }
 
+    fun changeStrokeColor(color: Int){
+        paint.color = color
+    }
+
     //called by android system whenever a view changes
     //a new bitmap and canvas is created
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
@@ -66,7 +73,6 @@ class MyCanvasView (context : Context) : View(context){
         extraCanvas = Canvas(extraBitmap)
         //fill canvas with color
         extraCanvas.drawColor(backgroundColor)
-
         //calculate a rectangular frame around the picture
         val inset = 40
         frame = Rect(inset, inset, w - inset, h - inset)
